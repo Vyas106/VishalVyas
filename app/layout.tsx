@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google"
 import "./globals.css"
-// import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "@/components/theme-provider"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Toaster } from "@/components/ui/sonner"
@@ -22,14 +22,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={inter.className}>
-        {/* <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange> */}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <Navbar />
           <main className="min-h-screen pt-16 bg-background text-foreground">
             <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
           <Toaster />
-        {/* </ThemeProvider> */}
+        </ThemeProvider>
       </body>
     </html>
   )
