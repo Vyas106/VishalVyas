@@ -42,10 +42,10 @@ export function Navbar() {
     }
   }, [isSidebarOpen]);
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
-  };
+  // const toggleTheme = () => {
+  //   setIsDarkMode(!isDarkMode);
+  //   document.documentElement.classList.toggle('dark');
+  // };
 
   const NavLinks = ({ mobile = false }) => (
     <>
@@ -95,7 +95,7 @@ export function Navbar() {
             </nav>
 
             <div className="flex items-center gap-4">
-              {/* Theme Toggle */}
+              {/* Theme Toggle
               <button
                 onClick={toggleTheme}
                 className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -110,7 +110,7 @@ export function Navbar() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                   </svg>
                 )}
-              </button>
+              </button> */}
 
               {/* Contact Button */}
               <Link
