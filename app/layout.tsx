@@ -10,8 +10,8 @@ import { PageTransition } from "@/components/page-transition"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "Modern Portfolio",
-  description: "A modern portfolio website built with Next.js",
+  title: "Vyas Vishal",
+  description: "",
 }
 
 export default function RootLayout({
@@ -21,10 +21,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={inter.className}>
+      <body className={inter.className} >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <Navbar />
-          <main className="min-h-screen pt-16 bg-background text-foreground">
+          <main className="min-h-screen pt-16 bg-background text-foreground bg-black">
             <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
