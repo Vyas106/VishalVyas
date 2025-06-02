@@ -109,7 +109,7 @@ export function Footer() {
                     </a>
 
                     <a
-                      href="https://linkedin.com/in/vishal-vyas-5292692aa"
+                      href="https://www.linkedin.com/in/vishalvyas-dev"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex items-center justify-between py-3 px-4 rounded-lg border border-white border-opacity-10 hover:border-opacity-20 hover:bg-white hover:bg-opacity-5 transition-all duration-300"

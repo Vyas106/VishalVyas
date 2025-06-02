@@ -6,8 +6,9 @@ import { usePathname } from "next/navigation";
 
 const navigationItems = [
   { name: "Home", path: "/" },
-  { name: "LinkedIn", path: "https://linkedin.com/in/vishal-vyas-5292692aa", external: true },
+  { name: "LinkedIn", path: "https://www.linkedin.com/in/vishalvyas-dev", external: true },
   { name: "GitHub", path: "https://github.com/Vyas106", external: true },
+  { name: "project", path: "/project" },
 ];
 
 export function Navbar() {

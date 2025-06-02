@@ -200,7 +200,7 @@ export function HeroSection() {
                 <div className="flex items-center space-x-8 pt-8">
                   {[
                     { icon: Github, href: "https://github.com/yourusername", label: "Github" },
-                    { icon: Linkedin, href: "https://linkedin.com/in/yourusername", label: "LinkedIn" }
+                    { icon: Linkedin, href: "https://www.linkedin.com/in/vishalvyas-dev", label: "LinkedIn" }
                   ].map(({ icon: Icon, href, label }, index) => (
                     <motion.div
                       key={label}

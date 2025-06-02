@@ -11,48 +11,70 @@ function createEmailTemplate(name: string, email: string, phone: string, message
       <title>New Contact Form Submission</title>
       <style>
         body {
-          font-family: Arial, sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           line-height: 1.6;
           color: #333;
-        }
-        .container {
           max-width: 600px;
           margin: 0 auto;
           padding: 20px;
-          border: 1px solid #ddd;
-          border-radius: 5px;
+        }
+        .container {
+          background: #f9f9f9;
+          padding: 30px;
+          border-radius: 10px;
+          border: 1px solid #e0e0e0;
         }
         h1 {
           color: #2c3e50;
+          border-bottom: 2px solid #3498db;
+          padding-bottom: 10px;
         }
         .field {
           margin-bottom: 20px;
+          background: white;
+          padding: 15px;
+          border-radius: 5px;
+          border-left: 4px solid #3498db;
         }
         .label {
           font-weight: bold;
           color: #34495e;
+          font-size: 14px;
+          text-transform: uppercase;
+          margin-bottom: 5px;
+        }
+        .value {
+          font-size: 16px;
+          color: #2c3e50;
+        }
+        .message-field {
+          border-left-color: #e74c3c;
         }
       </style>
     </head>
     <body>
       <div class="container">
-        <h1>New Contact Form Submission</h1>
+        <h1>🚀 New Contact Form Submission</h1>
         <div class="field">
-          <p class="label">Name:</p>
-          <p>${name}</p>
+          <div class="label">👤 Full Name</div>
+          <div class="value">${name}</div>
         </div>
         <div class="field">
-          <p class="label">Email:</p>
-          <p>${email}</p>
+          <div class="label">📧 Email Address</div>
+          <div class="value">${email}</div>
         </div>
         <div class="field">
-          <p class="label">Phone:</p>
-          <p>${phone || "Not provided"}</p>
+          <div class="label">📱 Phone Number</div>
+          <div class="value">${phone || "Not provided"}</div>
         </div>
-        <div class="field">
-          <p class="label">Message:</p>
-          <p>${message}</p>
+        <div class="field message-field">
+          <div class="label">💬 Message</div>
+          <div class="value">${message.replace(/\n/g, '<br>')}</div>
         </div>
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #e0e0e0;">
+        <p style="font-size: 12px; color: #7f8c8d; text-align: center;">
+          This email was sent from your website contact form at ${new Date().toLocaleString()}
+        </p>
       </div>
     </body>
     </html>
@@ -60,33 +82,109 @@ function createEmailTemplate(name: string, email: string, phone: string, message
 }
 
 export async function POST(request: Request) {
+  console.log("🚀 Contact API route called")
+  
   try {
+    // Parse request body
     const body = await request.json()
+    console.log("📝 Received form data:", { ...body, message: body.message?.substring(0, 50) + "..." })
+    
     const { name, email, phone, message } = body
 
-    const transporter = nodemailer.createTransport({
+    // Validate required fields
+    if (!name || !email || !message) {
+      console.error("❌ Missing required fields")
+      return NextResponse.json(
+        { error: "Missing required fields: name, email, and message are required" },
+        { status: 400 }
+      )
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      console.error("❌ Invalid email format")
+      return NextResponse.json(
+        { error: "Invalid email format" },
+        { status: 400 }
+      )
+    }
+
+    // Check environment variables
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+      console.error("❌ Missing email configuration")
+      return NextResponse.json(
+        { error: "Server configuration error - missing email credentials" },
+        { status: 500 }
+      )
+    }
+
+    console.log("📧 Creating email transporter...")
+    
+    // Create transporter
+    const transporter = nodemailer.createTransporter({
       host: "smtp.gmail.com",
       port: 587,
-      secure: false,
+      secure: false, // true for 465, false for other ports
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
     })
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: "vyasvishal.dev@gmail.com",
-      subject: "New Contact Form Submission",
-      html: createEmailTemplate(name, email, phone, message),
+    // Verify transporter configuration
+    try {
+      await transporter.verify()
+      console.log("✅ Email transporter verified successfully")
+    } catch (verifyError) {
+      console.error("❌ Email transporter verification failed:", verifyError)
+      return NextResponse.json(
+        { error: "Email configuration error - please check your credentials" },
+        { status: 500 }
+      )
     }
 
-    await transporter.sendMail(mailOptions)
+    // Prepare email options
+    const mailOptions = {
+      from: `"Contact Form" <${process.env.EMAIL_USER}>`,
+      to: "vyasvishal.dev@gmail.com",
+      subject: `🚀 New Contact Form Submission from ${name}`,
+      html: createEmailTemplate(name, email, phone, message),
+      replyTo: email, // Allow direct reply to the sender
+    }
 
-    return NextResponse.json({ message: "Email sent successfully" })
+    console.log("📤 Sending email...")
+    
+    // Send email
+    const info = await transporter.sendMail(mailOptions)
+    console.log("✅ Email sent successfully:", info.messageId)
+
+    return NextResponse.json({ 
+      message: "Email sent successfully",
+      messageId: info.messageId 
+    })
+
   } catch (error) {
-    console.error("Error sending email:", error)
-    return NextResponse.json({ error: "Failed to send email" }, { status: 500 })
+    console.error("❌ Error in contact API:", error)
+    
+    // Return more specific error messages
+    if (error.code === 'EAUTH') {
+      return NextResponse.json(
+        { error: "Email authentication failed - please check your email credentials" },
+        { status: 500 }
+      )
+    }
+    
+    if (error.code === 'ENOTFOUND') {
+      return NextResponse.json(
+        { error: "Email server not found - please check your internet connection" },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json(
+      { error: `Failed to send email: ${error.message}` },
+      { status: 500 }
+    )
   }
 }
-
