@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google"
+
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Navbar } from "@/components/navbar"
@@ -6,8 +6,6 @@ import { Footer } from "@/components/footer"
 import { Toaster } from "@/components/ui/sonner"
 import type React from "react"
 import { PageTransition } from "@/components/page-transition"
-
-const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
   title: "Vyas Vishal",
